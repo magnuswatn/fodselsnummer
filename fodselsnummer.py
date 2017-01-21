@@ -10,9 +10,17 @@ except NameError:
     xrange = range #pylint: disable=W0622, C0103
 
 def check_fnr(fnr):
-    """Check if a number is a valid fodselsnumber.
-       Only checks the control digits, do not check if the
-       individual numbers are used in the relevant year"""
+    """
+    Check if a number is a valid fodselsnumber.
+
+    Only checks the control digits, does not check if the
+    individual numbers are used in the relevant year
+
+    Args:
+        fnr: A string containing the fodselsnummer to check
+    Returns:
+        True if it is a valid fodselsnummer, False otherwise.
+    """
     if not re.match(r'\d{11}', fnr):
         return False
     generatedfnr = _generate_control_digits(fnr[0:9])
@@ -22,8 +30,15 @@ def check_fnr(fnr):
         return False
 
 def generate_fnr_for_year(year, d_numbers):
-    """Generates all the possible fodselsnumbers for a year,
-    optionally with D numbers"""
+    """
+    Generates all the possible fodselsnumbers for a year.
+
+    Args:
+        year: The year to generate fodselsnummers for (integer)
+        d_numbers: True if you want d-numbers as well, False otherwise.
+    Returns:
+        A list with all the possible fodselsnummers for that year.
+    """
     allfnrs = []
     startdate = date(year, 1, 1)
     enddate = date(year, 12, 31)
@@ -33,8 +48,15 @@ def generate_fnr_for_year(year, d_numbers):
     return allfnrs
 
 def generate_fnr_for_day(day, d_numbers):
-    """Generates all the possible fodselsnumbers for a day,
-    optionally with D numbers"""
+    """
+    Generates all the possible fodselsnumbers for a day.
+
+    Args:
+        day: The day to generate fodslesnummers for (datetime)
+        d_numbers: True if you want d-numbers as well, False otherwise.
+    Returns:
+        A list with all the possible fodselsnummers for that day.
+    """
     thisdaysfnr = []
     stupid1900s = False
     datestring = day.strftime('%d%m%y')
