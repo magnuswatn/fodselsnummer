@@ -3,6 +3,12 @@
 import re
 from datetime import date, timedelta as td
 
+# For Python 3 compability:
+try:
+    xrange
+except NameError:
+    xrange = range #pylint: disable=W0622, C0103
+
 def check_fnr(fnr):
     """Check if a number is a valid fodselsnumber.
        Only checks the control digits, do not check if the
@@ -19,7 +25,7 @@ def generate_fnr_for_year(year, d_numbers):
     """Generates all the possible fodselsnumbers for a year,
     optionally with D numbers"""
     allfnrs = []
-    startdate = date(year, 1, 01)
+    startdate = date(year, 1, 1)
     enddate = date(year, 12, 31)
     delta = enddate - startdate
     for i in xrange(delta.days + 1):
