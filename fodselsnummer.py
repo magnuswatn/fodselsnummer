@@ -11,6 +11,12 @@ except NameError:
 
 FNR_REGEX = re.compile(r'\d{11}')
 
+class FodselsnummerException(Exception):
+    pass
+class InvalidControlDigitException(FodselsnummerException):
+    pass
+
+
 def check_fnr(fnr, d_numbers=True):
     """
     Check if a number is a valid fodselsnumber.
@@ -39,7 +45,10 @@ def check_fnr(fnr, d_numbers=True):
         else:
             return False
 
-    generatedfnr = _generate_control_digits(fnr[0:9])
+    try:
+        generatedfnr = _generate_control_digits(fnr[0:9])
+    except InvalidControlDigitException:
+        return False
 
     return bool(fnr == generatedfnr)
 
@@ -90,24 +99,28 @@ def generate_fnr_for_day(day, d_numbers):
         individualmax = 999
     for x in xrange(individualmin, individualmax+1):
         indivudalnr = str(x).zfill(3)
-        fnr = _generate_control_digits(datestring + indivudalnr)
-        if fnr != 'invalid':
-            thisdaysfnr += [fnr]
+        try:
+            thisdaysfnr.append(_generate_control_digits(datestring + indivudalnr))
+        except InvalidControlDigitException:
+            pass
         if d_numbers:
-            dnr = _generate_control_digits(dnrdatestring + indivudalnr)
-            if dnr != 'invalid':
-                thisdaysfnr += [dnr]
+            try:
+                thisdaysfnr.append(_generate_control_digits(dnrdatestring + indivudalnr))
+            except InvalidControlDigitException:
+                pass
     # Bonus round because of the stupid 1900s
     if stupid1900s:
         for x in xrange(900, 1000):
             indivudalnr = str(x).zfill(3)
-            fnr = _generate_control_digits(datestring + indivudalnr)
-            if fnr != 'invalid':
-                thisdaysfnr += [fnr]
+            try:
+                thisdaysfnr.append(_generate_control_digits(datestring + indivudalnr))
+            except InvalidControlDigitException:
+                pass
             if d_numbers:
-                dnr = _generate_control_digits(dnrdatestring + indivudalnr)
-                if dnr != 'invalid':
-                    thisdaysfnr += [dnr]
+                try:
+                    thisdaysfnr.append(_generate_control_digits(dnrdatestring + indivudalnr))
+                except InvalidControlDigitException:
+                    pass
     return thisdaysfnr
 
 def _generate_control_digits(numbersofar):
@@ -124,7 +137,7 @@ def _generate_control_digits(numbersofar):
         if 11-rest != 10:
             control1 = 11-rest
         else:
-            return 'invalid'
+            raise InvalidControlDigitException
     numbersofar += str(control1)
     sum2 = 0
     for x in xrange(0, 10):
@@ -136,6 +149,6 @@ def _generate_control_digits(numbersofar):
         if 11-rest != 10:
             control2 = 11-rest
         else:
-            return 'invalid'
+            raise InvalidControlDigitException
     numbersofar += str(control2)
     return numbersofar
