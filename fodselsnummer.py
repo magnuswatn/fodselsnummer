@@ -92,27 +92,27 @@ def generate_fnr_for_day(day, d_numbers):
         individualmin = 500
         individualmax = 999
     for x in range(individualmin, individualmax+1):
-        indivudalnr = str(x).zfill(3)
+        individualnr = str(x).zfill(3)
         try:
-            thisdaysfnr.append(_generate_control_digits(datestring + indivudalnr))
+            thisdaysfnr.append(_generate_control_digits(datestring + individualnr))
         except InvalidControlDigitException:
             pass
         if d_numbers:
             try:
-                thisdaysfnr.append(_generate_control_digits(dnrdatestring + indivudalnr))
+                thisdaysfnr.append(_generate_control_digits(dnrdatestring + individualnr))
             except InvalidControlDigitException:
                 pass
     # Bonus round because of the stupid 1900s
     if stupid1900s:
         for x in range(900, 1000):
-            indivudalnr = str(x).zfill(3)
+            individual_nr = str(x).zfill(3)
             try:
-                thisdaysfnr.append(_generate_control_digits(datestring + indivudalnr))
+                thisdaysfnr.append(_generate_control_digits(datestring + individualnr))
             except InvalidControlDigitException:
                 pass
             if d_numbers:
                 try:
-                    thisdaysfnr.append(_generate_control_digits(dnrdatestring + indivudalnr))
+                    thisdaysfnr.append(_generate_control_digits(dnrdatestring + individualnr))
                 except InvalidControlDigitException:
                     pass
     return thisdaysfnr
