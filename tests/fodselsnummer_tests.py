@@ -12,6 +12,19 @@ class FodselsnummerTestCase(unittest.TestCase):
         valid_fnr = '04098049628'
         self.assertTrue(fodselsnummer.check_fnr(valid_fnr))
 
+    def test_valid_fnr_with_pre_garbage(self):
+        valid_fnr = 'garbage04098049628'
+        self.assertFalse(fodselsnummer.check_fnr(valid_fnr))
+
+    def test_valid_fnr_with_post_garbage(self):
+        valid_fnr = '04098049628garbage'
+        self.assertFalse(fodselsnummer.check_fnr(valid_fnr))
+
+    def test_valid_pnr_with_invalid_dates(self):
+        """Fnrs with valid control digits, but invalid date"""
+        self.assertFalse(fodselsnummer.check_fnr('80205870001'))
+        self.assertFalse(fodselsnummer.check_fnr('80311850001'))
+
     def test_invalid_fnr_is_invalid(self):
         """Is the invalid fnr invalid?"""
         invalid_fnr = '01078018943'
