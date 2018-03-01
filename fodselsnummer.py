@@ -1,7 +1,7 @@
 """Functions for validation and generation of Norwegian fodselsnumbers"""
 
 import re
-from datetime import date, timedelta as td
+from datetime import date, datetime, timedelta as td
 
 # For Python 3 compability:
 try:
@@ -9,7 +9,9 @@ try:
 except NameError:
     xrange = range #pylint: disable=W0622, C0103
 
-def check_fnr(fnr):
+FNR_REGEX = re.compile(r'\d{11}')
+
+def check_fnr(fnr, d_numbers=True):
     """
     Check if a number is a valid fodselsnumber.
 
@@ -18,16 +20,28 @@ def check_fnr(fnr):
 
     Args:
         fnr: A string containing the fodselsnummer to check
+        d_numbers: True (the default) if d-numbers should be accepted
     Returns:
         True if it is a valid fodselsnummer, False otherwise.
     """
-    if not re.match(r'\d{11}', fnr):
+    if not FNR_REGEX.match(fnr):
         return False
+
+    try:
+        datetime.strptime(fnr[0:6], '%d%m%y')
+    except ValueError:
+        if d_numbers:
+            dnrdatestring = str(int(fnr[0])-4) + fnr[1:6]
+            try:
+                datetime.strptime(dnrdatestring, '%d%m%y')
+            except ValueError:
+                return False
+        else:
+            return False
+
     generatedfnr = _generate_control_digits(fnr[0:9])
-    if fnr == generatedfnr:
-        return True
-    else:
-        return False
+
+    return bool(fnr == generatedfnr)
 
 def generate_fnr_for_year(year, d_numbers):
     """

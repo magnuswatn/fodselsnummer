@@ -30,6 +30,18 @@ class FodselsnummerTestCase(unittest.TestCase):
         invalid_fnr = '01078018943'
         self.assertFalse(fodselsnummer.check_fnr(invalid_fnr))
 
+    def test_valid_dnr_is_valid(self):
+        valid_dnr = '41031883219'
+        self.assertTrue(fodselsnummer.check_fnr(valid_dnr))
+
+    def test_valid_dnr_is_invalid_when_turned_off(self):
+        valid_dnr = '41031883219'
+        self.assertFalse(fodselsnummer.check_fnr(valid_dnr, d_numbers=False))
+
+    def test_valid_fnr_is_valid_when_d_numbers_turned_off(self):
+        valid_fnr = '04098049628'
+        self.assertTrue(fodselsnummer.check_fnr(valid_fnr, d_numbers=False))
+
     def test_does_control_digits_match(self):
         """Does the control digit function work?"""
         incomplete_fnr = '311200136'
