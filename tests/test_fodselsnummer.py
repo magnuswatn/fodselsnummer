@@ -49,6 +49,20 @@ class FodselsnummerTestCase(unittest.TestCase):
         generated_fnr = fodselsnummer._generate_control_digits(incomplete_fnr)
         self.assertEqual(generated_fnr, complete_fnr)
 
+    def test_generate_for_a_year(self):
+        result = fodselsnummer.generate_fnr_for_year(1991, False)
+        # the first should be from january
+        self.assertEqual(result[0][0:6], '010191')
+        # last should be from december
+        self.assertEqual(result[-1][0:6], '311291')
+
+    def test_generate_for_a_year_with_d_numbers(self):
+        result = fodselsnummer.generate_fnr_for_year(1985, True)
+        # the first should be from january
+        self.assertEqual(result[0][0:6], '410185')
+        # last should be from december
+        self.assertEqual(result[-1][0:6], '711285')
+
     # List are taken from: http://www.fnrinfo.no/Verktoy/FinnLovlige_Dato.aspx
 
     def test_1900s_sample_day(self):
