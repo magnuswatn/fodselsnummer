@@ -3,12 +3,6 @@
 import re
 from datetime import date, datetime, timedelta as td
 
-# For Python 3 compability:
-try:
-    xrange
-except NameError:
-    xrange = range #pylint: disable=W0622, C0103
-
 FNR_REGEX = re.compile(r'\d{11}')
 
 class FodselsnummerException(Exception):
@@ -66,7 +60,7 @@ def generate_fnr_for_year(year, d_numbers):
     startdate = date(year, 1, 1)
     enddate = date(year, 12, 31)
     delta = enddate - startdate
-    for i in xrange(delta.days + 1):
+    for i in range(delta.days + 1):
         allfnrs += generate_fnr_for_day(startdate + td(days=i), d_numbers)
     return allfnrs
 
@@ -97,7 +91,7 @@ def generate_fnr_for_day(day, d_numbers):
     else:
         individualmin = 500
         individualmax = 999
-    for x in xrange(individualmin, individualmax+1):
+    for x in range(individualmin, individualmax+1):
         indivudalnr = str(x).zfill(3)
         try:
             thisdaysfnr.append(_generate_control_digits(datestring + indivudalnr))
@@ -110,7 +104,7 @@ def generate_fnr_for_day(day, d_numbers):
                 pass
     # Bonus round because of the stupid 1900s
     if stupid1900s:
-        for x in xrange(900, 1000):
+        for x in range(900, 1000):
             indivudalnr = str(x).zfill(3)
             try:
                 thisdaysfnr.append(_generate_control_digits(datestring + indivudalnr))
@@ -128,7 +122,7 @@ def _generate_control_digits(numbersofar):
     staticnumbers1 = [3, 7, 6, 1, 8, 9, 4, 5, 2, 1]
     staticnumbers2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2, 1]
     sum1 = 0
-    for x in xrange(0, 9):
+    for x in range(0, 9):
         sum1 += int(numbersofar[x]) * staticnumbers1[x]
     rest = sum1 % 11
     if rest == 0:
@@ -140,7 +134,7 @@ def _generate_control_digits(numbersofar):
             raise InvalidControlDigitException
     numbersofar += str(control1)
     sum2 = 0
-    for x in xrange(0, 10):
+    for x in range(0, 10):
         sum2 += int(numbersofar[x]) * staticnumbers2[x]
     rest = sum2 % 11
     if rest == 0:
